@@ -4,14 +4,18 @@ import { Link } from 'react-router-dom';
 
 export default function RegisterPage() {
 
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   function registerUser(e) {
     e.preventDefault();
 
-    axios.get('/test');
+    axios.post('/register', {
+      name, 
+      email,
+      password
+    });
   }
 
   return (
