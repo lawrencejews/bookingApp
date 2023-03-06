@@ -35,6 +35,8 @@ app.get("/test", (req, res) => {
   res.json("test ok");
 });
 
+
+// User registration
 app.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -51,6 +53,8 @@ app.post("/register", async (req, res) => {
   }
 });
 
+
+// User Login
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const userDoc = await User.findOne({ email });
@@ -75,17 +79,25 @@ app.post("/login", async (req, res) => {
   }
 });
 
+
+// Profile Authentication
 app.get("/profile", (req, res) => {
   const { token } = req.cookies;
   if (token) {
-    jwt.verify(token, jwtSecret, {}, (error, user) => {
+    jwt.verify(token, jwtSecret, {}, async (error, userData) => {
       if (error) throw error;
-      res.json(user);
+      const {name,  email, _id} = await User.findById(userData.id)
+      res.json({name, email, _id});
     });
   } else {
     res.json(null);
   }
-  res.json({ token });
 });
+
+// Logout from profile.
+app.post('/logout', (req, res) => {
+  res.cookie('token', '').json(true);
+});
+
 
 app.listen(4000);
