@@ -11,6 +11,7 @@ require("dotenv").config();
 
 // Schemas
 const User = require("./models/User.js");
+const Place = require("./models/Place.js");
 
 const app = express();
 
@@ -117,7 +118,7 @@ const photosMiddleware = multer({ dest: 'uploads' });
 app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
 
   const uploadedFiles = [];
-  for (let i = 0; i < req.files.length; i++){
+  for (let i = 0; i < req.files.length; i++) {
     const { path, originalname } = req.files[i];
     const parts = originalname.split('.');
     const ext = parts[parts.length - 1]
@@ -127,7 +128,22 @@ app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
     uploadedFiles.push(newPath.replace('uploads/', ''))
   }
   res.json(uploadedFiles);
-})
+});
+
+
+// Redirect selected new place
+app.post('/places', (req, res) => {
+
+  jwt.verify(token, jwtSecret, {}, async (error, userData) => {
+    if (error) throw error;
+    const { name, email, _id } = await User.findById(userData.id);
+    res.json({ name, email, _id });
+  });
+
+  Place.create({
+
+  });
+}); 
 
 
 app.listen(4000);
