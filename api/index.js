@@ -207,11 +207,11 @@ app.put('/places', async (req, res) => {
     if (error) throw error;
     const placeDoc = await Place.findById(id);
     if (userData.id === placeDoc.owner.toString()) {
-
+      
       placeDoc.set({
         title,
         address,
-        addedPhotos,
+        photos: addedPhotos,
         description,
         perks,
         extraInfo,

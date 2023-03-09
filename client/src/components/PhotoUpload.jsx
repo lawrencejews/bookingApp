@@ -1,18 +1,18 @@
 import { useState } from "react";
 import axios from "axios";
 
-export default function PhotoUploader() {
-  const [addedPhotos, setAddedPhotos] = useState([]);
+export default function PhotoUploader({addedPhotos, onChange}) {
+  
   const [photoLink, setPhotoLink] = useState("");
 
   // Add a link photo
   async function addPhotoByLink(e) {
     e.preventDefault();
 
-    const { data: filename } = await axios.post("upload-by-link", {
+    const { data: filename } = await axios.post("/upload-by-link", {
       link: photoLink,
     });
-    setAddedPhotos((prev) => {
+    onChange((prev) => {
       return [...prev, filename];
     });
     setPhotoLink("");
@@ -36,7 +36,7 @@ export default function PhotoUploader() {
       })
       .then((response) => {
         const { data: filenames } = response;
-        setAddedPhotos((prev) => {
+        onChange((prev) => {
           return [...prev, ...filenames];
         });
       });

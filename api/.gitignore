@@ -24,5 +24,4 @@ dist-ssr
 *.sw?
 vs_code
 DS_Store
-.env
 /uploads

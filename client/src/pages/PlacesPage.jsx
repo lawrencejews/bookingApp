@@ -47,7 +47,7 @@ export default function PlacePage() {
                     <img
                       className="object-cover"
                       src={"http://localhost:4000/uploads/"+place.photos[0]}
-                      alt="place_photo"
+                      alt=""
                     />
                   )}
                 </div>
