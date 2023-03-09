@@ -1,9 +1,9 @@
 import PhotoUploader from "../components/PhotoUpload";
 import Perks from "../components/Perks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import AccountNav from "../components/AccountNav";
-import { Navigate } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 export default function PlacesFormPage() {
   const [title, setTitle] = useState("");
@@ -16,6 +16,26 @@ export default function PlacesFormPage() {
   const [checkOut, setCheckOut] = useState("");
   const [maxGuest, setMaxGuest] = useState(1);
   const [redirect, setRedirect] = useState(false);
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+    axios.get("/places/"+id).then((response) => {
+      const { data } = response;
+      setTitle(data.title);
+      setAddress(data.address);
+      setAddedPhotos(data.photos);
+      setDescription(data.description);
+      setPerks(data.perks);
+      setEntraInfo(data.extraInfo);
+      setCheckIn(data.checkIn);
+      setCheckOut(data.checkOut);
+      setMaxGuest(data.maxGuest);
+    });
+  }, [id]);
 
   // Tailwindcss styles
   function inputHeader(text) {
@@ -35,31 +55,43 @@ export default function PlacesFormPage() {
     );
   }
 
-  async function AddNewPlace(e) {
+  async function savePlace(e) {
     e.preventDefault();
 
-    await axios.post("/places", {
+    const placeData = {
       title,
       address,
-      addedPhotos,
+      photos:addedPhotos,
       description,
       perks,
       extraInfo,
       checkIn,
       checkOut,
       maxGuest,
-    });
-    setRedirect(true);
+    };
+
+    if (id) {
+      // update
+      await axios.put("/places", {
+        id,
+        ...placeData,
+      });
+      setRedirect(true);
+    } else {
+      // new place
+      await axios.post("/places", { ...placeData });
+      setRedirect(true);
+    }
   }
 
   if (redirect) {
-    return <Navigate to={'/account/places'} />
+    return <Navigate to={"/account/places"} />;
   }
 
   return (
     <div>
-      <AccountNav/>
-      <form onSubmit={AddNewPlace}>
+      <AccountNav />
+      <form onSubmit={savePlace}>
         {preInput("Title", "Title with an advertisement for your place")}
         <input
           type="text"
@@ -103,7 +135,7 @@ export default function PlacesFormPage() {
             <h3 className="mt-2 -mb-1">Check in time</h3>
             <input
               type="text"
-              placeholder="14:00"
+              placeholder="14"
               value={checkIn}
               onChange={(e) => setCheckIn(e.target.value)}
             />
@@ -112,7 +144,7 @@ export default function PlacesFormPage() {
             <h3 className="mt-2 -mb-1">Check out time</h3>
             <input
               type="text"
-              placeholder="11:00"
+              placeholder="11"
               value={checkOut}
               onChange={(e) => setCheckOut(e.target.value)}
             />

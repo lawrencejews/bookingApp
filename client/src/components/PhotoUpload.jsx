@@ -20,7 +20,7 @@ export default function PhotoUploader() {
 
   // Upload static photo
   function uploadPhoto(e) {
-    e.preventDefault();
+    // e.preventDefault();
 
     const files = e.target.files;
     const data = new FormData();
@@ -31,7 +31,7 @@ export default function PhotoUploader() {
     axios
       .post("/upload", data, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-type": "multipart/form-data",
         },
       })
       .then((response) => {
@@ -64,7 +64,7 @@ export default function PhotoUploader() {
             <div className="h-32 flex" key={link}>
               <img
                 className="rounded-2xl w-full object-cover"
-                src={"http://localhost:4000/uploads/" + link}
+                src={"http://localhost:4000/uploads/"+link}
                 alt="uploaded image"
               />
             </div>
