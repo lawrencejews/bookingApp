@@ -22,7 +22,7 @@ app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(
   cors({
     credentials: true,
-    origin: "http://127.0.0.1:5173",
+    origin: "http://127.0.0.1:5174",
   })
 );
 
@@ -151,7 +151,6 @@ app.post("/places", (req, res) => {
   } = req.body;
 
   jwt.verify(token, jwtSecret, {}, async (error, userData) => {
-
     if (error) throw error;
 
     const placeDoc = await Place.create({
@@ -224,6 +223,7 @@ app.put('/places', async (req, res) => {
         price
       });
       await placeDoc.save();
+
       res.json('ok');
     }
   });

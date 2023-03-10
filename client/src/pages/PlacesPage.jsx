@@ -40,7 +40,7 @@ export default function PlacePage() {
             places.map((place) => (
               <Link
                 to={"/account/places/"+place._id}
-                className="flex cursor-pointer gap-4 bg-gray-100 p-4 rounded-2xl"
+                className="flex cursor-pointer gap-4 bg-gray-100 p-4 rounded-2xl m-4"
               >
                 <div className="flex w-32 h-32 bg-gray-300 grow shrink-0">
                   {place.photos.length > 0 && (

@@ -11,7 +11,6 @@ export default function RegisterPage() {
   async function registerUser(e) {
     e.preventDefault();
   
-
     try {
       await axios.post('/register', {
         name, 
