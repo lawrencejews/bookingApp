@@ -5,8 +5,8 @@ export default function Booking({ place }) {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [numberOfGuests, setNumberOfGuests] = useState(1);
-  const [name, setName] = useState('');
-  const [mobile, setMobile] = useState('');
+  const [name, setName] = useState("");
+  const [mobile, setMobile] = useState("");
 
   // date-fns to compare price for checked dates.
   let numberOfNights = 0;

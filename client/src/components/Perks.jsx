@@ -1,4 +1,5 @@
 export default function Perks({ selected, onChange }) {
+  
   function handleCheckBox(e) {
     const { checked, name } = e.target;
     if (checked) {

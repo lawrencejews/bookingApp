@@ -116,7 +116,9 @@ app.post("/upload-by-link", async (req, res) => {
 // Upload with multer
 const photosMiddleware = multer({ dest: "uploads" });
 app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
+
   const uploadedFiles = [];
+
   for (let i = 0; i < req.files.length; i++) {
     const { path, originalname } = req.files[i];
     const parts = originalname.split(".");
@@ -165,7 +167,7 @@ app.post("/places", (req, res) => {
   });
 });
 
-// Getting all the places
+// Getting all the places for a given user.
 app.get("/user-places", (req, res) => {
   const { token } = req.cookies;
   jwt.verify(token, jwtSecret, {}, async (error, userData) => {
@@ -177,6 +179,7 @@ app.get("/user-places", (req, res) => {
 });
 
 app.get("/places/:id", async (req, res) => {
+  
   const { id } = req.params;
   res.json(await Place.findById(id));
 });
@@ -226,7 +229,7 @@ app.get("/places", async (req, res) => {
 
 app.post("/booking", (req, res) => {
   const { place, checkIn, checkOut, numberOfGuests, name, phone, price } = req.body;
-  
+
 });
 
 app.listen(4000);
