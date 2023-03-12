@@ -15,7 +15,7 @@ export default function IndexPage() {
       {places.length > 0 &&
         places.map((place) => (
           <Link to={"/places/" + place._id}>
-            <div className="bg-gray-500 rounded-2xl flex mb-2">
+            <div className="bg-gray-500 rounded-2xl flex mb-2" key={place}>
               {place.photos?.[0] && (
                 <img
                   className="rounded-2xl object-cover aspect-square"

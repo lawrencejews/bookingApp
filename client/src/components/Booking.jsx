@@ -1,12 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { differenceInCalendarDays } from "date-fns";
+import axios from "axios";
+import { Navigate } from "react-router-dom";
+import { UserContext } from "./UserContext";
 
 export default function Booking({ place }) {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [numberOfGuests, setNumberOfGuests] = useState(1);
   const [name, setName] = useState("");
-  const [mobile, setMobile] = useState("");
+  const [phone, setPhone] = useState("");
+  const [redirect, setRedirect] = useState("");
+  const { user } = useContext(UserContext);
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name);
+    }
+  }, [user]);
 
   // date-fns to compare price for checked dates.
   let numberOfNights = 0;
@@ -15,6 +26,24 @@ export default function Booking({ place }) {
       new Date(checkOut),
       new Date(checkIn)
     );
+  }
+
+  async function bookThisPlace() {
+    const response = await axios.post("/bookings", {
+      checkIn,
+      checkOut,
+      numberOfGuests,
+      name,
+      phone,
+      place: place._id,
+      price: numberOfNights * place.price,
+    });
+    const bookingId = response.data._id;
+    setRedirect(`/account/bookings/${bookingId}`);
+  }
+
+  if (redirect) {
+    return <Navigate to={redirect} />;
   }
 
   return (
@@ -61,14 +90,14 @@ export default function Booking({ place }) {
               <label>Phone number:</label>
               <input
                 type="tel"
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
               />
             </div>
           )}
         </div>
         {/* date-fns to compare price for checked dates */}
-        <button className="primary mt-4">
+        <button onClick={bookThisPlace} className="primary mt-4">
           Book this place
           {numberOfNights > 0 && <span>${numberOfNights * place.price}</span>}
         </button>

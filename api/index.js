@@ -12,6 +12,7 @@ require("dotenv").config();
 // Schemas
 const User = require("./models/User.js");
 const Place = require("./models/Place.js");
+const Booking = require("./models/Booking.js");
 
 const app = express();
 
@@ -35,6 +36,16 @@ mongoose
 // Password encryption
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = "secret7878";
+
+//  Token getting function
+function getUserDataFromReq(req) {
+  return new Promise((resolve, reject) => {
+    jwt.verify(req.cookies.token, jwtSecret, {}, async (err, userData) => {
+      if (err) throw err;
+      resolve(userData);
+    });
+  });
+}
 
 app.get("/test", (req, res) => {
   res.json("test ok");
@@ -116,7 +127,6 @@ app.post("/upload-by-link", async (req, res) => {
 // Upload with multer
 const photosMiddleware = multer({ dest: "uploads" });
 app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
-
   const uploadedFiles = [];
 
   for (let i = 0; i < req.files.length; i++) {
@@ -179,7 +189,6 @@ app.get("/user-places", (req, res) => {
 });
 
 app.get("/places/:id", async (req, res) => {
-  
   const { id } = req.params;
   res.json(await Place.findById(id));
 });
@@ -227,9 +236,31 @@ app.get("/places", async (req, res) => {
   res.json(await Place.find());
 });
 
-app.post("/booking", (req, res) => {
-  const { place, checkIn, checkOut, numberOfGuests, name, phone, price } = req.body;
+app.post("/bookings", async (req, res) => {
+  const userData = await getUserDataFromReq(req);
+  const { place, checkIn, checkOut, numberOfGuests, name, phone, price } =
+    req.body;
+  Booking.create({
+    place,
+    checkIn,
+    checkOut,
+    numberOfGuests,
+    name,
+    phone,
+    price,
+    user: userData.id,
+  })
+    .then((doc) => {
+      res.json(doc);
+    })
+    .catch((err) => {
+      throw err;
+    });
+});
 
+app.get("/bookings", async (req, res) => {
+  const userData = await getUserDataFromReq(req);
+  res.json(await Booking.find({ user: userData.id }).populate("place"));
 });
 
 app.listen(4000);
